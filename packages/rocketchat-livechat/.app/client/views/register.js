@@ -21,6 +21,11 @@ Template.register.helpers({
 	departments() {
 		return Department.find({ showOnRegistration: true });
 	},
+
+	bizDepartment() {
+		const { biz_id } = FlowRouter.current().queryParams;
+		return biz_id;
+	},
 	videoCallEnabled() {
 		return Livechat.videoCall;
 	},
@@ -87,7 +92,7 @@ Template.register.events({
 			department: Livechat.department,
 		};
 
-		Meteor.call('livechat:registerGuest', guest, function(error, result) {
+		Meteor.call('livechat:registerGuest', guest, function (error, result) {
 			if (error != null) {
 				return instance.showError(error.reason);
 			}
@@ -108,7 +113,7 @@ Template.register.events({
 	},
 });
 
-Template.register.onCreated(function() {
+Template.register.onCreated(function () {
 	this.error = new ReactiveVar();
 	this.request = '';
 

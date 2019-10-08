@@ -107,7 +107,9 @@ Template.livechatWindow.events({
 	},
 });
 
-Template.livechatWindow.onCreated(function() {
+Template.livechatWindow.onCreated(function () {
+	const { biz_id } = FlowRouter.current().queryParams;
+
 	Session.set({ sound: true });
 
 	TAPi18n.conf.i18n_files_route = Meteor._relativeToSiteRootUrl('/tap-i18n');
@@ -118,7 +120,7 @@ Template.livechatWindow.onCreated(function() {
 		let lng = window.navigator.userLanguage || window.navigator.language || 'en';
 		const regexp = /([a-z]{2}-)([a-z]{2})/;
 		if (regexp.test(lng)) {
-			lng = lng.replace(regexp, function(match, ...parts) {
+			lng = lng.replace(regexp, function (match, ...parts) {
 				return parts[0] + parts[1].toUpperCase();
 			});
 		}
@@ -145,12 +147,12 @@ Template.livechatWindow.onCreated(function() {
 			countryCode = countryCode.toUpperCase();
 		}
 
-		return countryCode ? `${ languageCode }-${ countryCode }` : languageCode;
+		return countryCode ? `${languageCode}-${countryCode}` : languageCode;
 	};
 
 	this.autorun(() => {
 		// get all needed live chat info for the user
-		Meteor.call('livechat:getInitialData', visitor.getToken(), Livechat.department, (err, result) => {
+		Meteor.call('livechat:getInitialData', visitor.getToken(), biz_id, (err, result) => {
 			if (err) {
 				return console.error(err);
 			}
