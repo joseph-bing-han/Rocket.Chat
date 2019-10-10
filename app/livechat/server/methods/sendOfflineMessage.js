@@ -10,6 +10,7 @@ Meteor.methods({
 			name: String,
 			email: String,
 			message: String,
+			department: String,
 		});
 
 		return Livechat.sendOfflineMessage(data);
