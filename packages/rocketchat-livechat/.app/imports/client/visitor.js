@@ -3,6 +3,7 @@ import { Meteor } from 'meteor/meteor';
 import { ReactiveVar } from 'meteor/reactive-var';
 import { Random } from 'meteor/random';
 import { Session } from 'meteor/session';
+import { FlowRouter } from 'meteor/kadira:flow-router';
 
 const msgStream = new Meteor.Streamer('room-messages');
 
@@ -14,13 +15,16 @@ export default {
 	roomToSubscribe: new ReactiveVar(null),
 	roomSubscribed: null,
 	connected: null,
+	itemKey: 'visitorToken',
 
 	register() {
-		if (!localStorage.getItem('visitorToken')) {
-			localStorage.setItem('visitorToken', Random.id());
+		const { biz_id } = FlowRouter.current().queryParams;
+		this.itemKey = 'visitorToken-' + biz_id;
+		if (!localStorage.getItem(this.itemKey)) {
+			localStorage.setItem(this.itemKey, Random.id());
 		}
 
-		this.token.set(localStorage.getItem('visitorToken'));
+		this.token.set(localStorage.getItem(this.itemKey));
 	},
 
 	reset() {
@@ -72,7 +76,7 @@ export default {
 
 		this.reset();
 
-		localStorage.setItem('visitorToken', token);
+		localStorage.setItem(this.itemKey, token);
 		this.token.set(token);
 
 		Meteor.call('livechat:loginByToken', token, (err, result) => {

@@ -66,7 +66,10 @@ Template.livechatWindow.helpers({
 
 Template.livechatWindow.events({
 	'mousedown .title'({ target, clientX: x, clientY: y }) {
-		parentCall('startDragWindow', { x, y });
+		parentCall('startDragWindow', {
+			x,
+			y,
+		});
 
 		this.onDrag = ({ clientX: x, clientY: y }) => {
 			parentCall('dragWindow', {
@@ -107,7 +110,7 @@ Template.livechatWindow.events({
 	},
 });
 
-Template.livechatWindow.onCreated(function () {
+Template.livechatWindow.onCreated(function() {
 	const { biz_id } = FlowRouter.current().queryParams;
 
 	Session.set({ sound: true });
@@ -117,10 +120,10 @@ Template.livechatWindow.onCreated(function () {
 	const availableLanguages = TAPi18n.getLanguages();
 
 	const defaultAppLanguage = () => {
-		let lng = window.navigator.userLanguage || window.navigator.language || 'en';
+		let lng = window.navigator.userLanguage || window.navigator.language || 'zh-CN';
 		const regexp = /([a-z]{2}-)([a-z]{2})/;
 		if (regexp.test(lng)) {
-			lng = lng.replace(regexp, function (match, ...parts) {
+			lng = lng.replace(regexp, function(match, ...parts) {
 				return parts[0] + parts[1].toUpperCase();
 			});
 		}
@@ -137,7 +140,7 @@ Template.livechatWindow.onCreated(function () {
 	const normalizeLanguageString = (languageString) => {
 		let [languageCode, countryCode] = languageString.split ? languageString.split(/[-_]/) : [];
 		if (!languageCode || languageCode.length !== 2) {
-			return 'en';
+			return 'zh-CN';
 		}
 		languageCode = languageCode.toLowerCase();
 
@@ -147,7 +150,7 @@ Template.livechatWindow.onCreated(function () {
 			countryCode = countryCode.toUpperCase();
 		}
 
-		return countryCode ? `${languageCode}-${countryCode}` : languageCode;
+		return countryCode ? `${ languageCode }-${ countryCode }` : languageCode;
 	};
 
 	this.autorun(() => {

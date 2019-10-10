@@ -1,7 +1,14 @@
 import { Meteor } from 'meteor/meteor';
 import _ from 'underscore';
 
-import { Rooms, Users, LivechatDepartment, LivechatTrigger, LivechatVisitors } from '../../../models';
+import {
+	Rooms,
+	Users,
+	LivechatDepartment,
+	LivechatTrigger,
+	LivechatVisitors,
+	LivechatDepartmentAgents,
+} from '../../../models';
 import { Livechat } from '../lib/Livechat';
 
 Meteor.methods({
@@ -90,12 +97,10 @@ Meteor.methods({
 			info.triggers.push(_.pick(trigger, '_id', 'actions', 'conditions', 'runOnce'));
 		});
 
-		LivechatDepartment.findEnabledWithAgents().forEach((department) => {
-			info.departments.push(department);
-		});
+		info.departments.push(LivechatDepartment.findOneByIdOrName(departmentId));
 		info.allowSwitchingDepartments = initSettings.Livechat_allow_switching_departments;
 
-		info.online = Users.findOnlineAgents().count() > 0;
+		info.online = LivechatDepartmentAgents.getOnlineForDepartment(departmentId).count() > 0;
 		return info;
 	},
 });
